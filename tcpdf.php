@@ -7678,7 +7678,7 @@ class TCPDF {
 				if (ob_get_contents()) {
 					$this->Error('Some data has already been output, can\'t send PDF file');
 				}
-				if (php_sapi_name() != 'cli') {
+				if (php_sapi_name() != 'cli' && php_sapi_name() != 'phpdbg') {
 					// send output to a browser
 					header('Content-Type: application/pdf');
 					if (headers_sent()) {
@@ -9883,7 +9883,7 @@ class TCPDF {
 			//$out .= ' /XFA ';
 			$out .= ' >>';
 			// signatures
-			if ($this->sign AND isset($this->signature_data['cert_type']) 
+			if ($this->sign AND isset($this->signature_data['cert_type'])
 				AND (empty($this->signature_data['approval']) OR ($this->signature_data['approval'] != 'A'))) {
 				if ($this->signature_data['cert_type'] > 0) {
 					$out .= ' /Perms << /DocMDP '.($this->sig_obj_id + 1).' 0 R >>';
@@ -16679,7 +16679,7 @@ class TCPDF {
 					// get attributes
 					preg_match_all('/([^=\s]*)[\s]*=[\s]*"([^"]*)"/', $element, $attr_array, PREG_PATTERN_ORDER);
 					$dom[$key]['attribute'] = array(); // reset attribute array
-					while (list($id, $name) = each($attr_array[1])) {
+					foreach ($attr_array[1] as $id => $name) {
 						$dom[$key]['attribute'][strtolower($name)] = $attr_array[2][$id];
 					}
 					if (!empty($css)) {
@@ -16692,7 +16692,7 @@ class TCPDF {
 						// get style attributes
 						preg_match_all('/([^;:\s]*):([^;]*)/', $dom[$key]['attribute']['style'], $style_array, PREG_PATTERN_ORDER);
 						$dom[$key]['style'] = array(); // reset style attribute array
-						while (list($id, $name) = each($style_array[1])) {
+						foreach ($style_array[1] as $id => $name) {
 							// in case of duplicate attribute the last replace the previous
 							$dom[$key]['style'][strtolower($name)] = trim($style_array[2][$id]);
 						}
@@ -18811,7 +18811,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 			if ((!isset($this->tagvspaces[$tag['value']])) AND (in_array($tag['value'], array('div', 'dt', 'dd', 'li', 'br', 'hr')))) {
 				$hb = 0;
 			} else {
-				$hb = ($on * $cur_h);
+				$hb = ($on * floatval($cur_h));
 			}
 			if (($this->htmlvspace <= 0) AND ($on > 0)) {
 				if (isset($parent['fontsize'])) {
@@ -18841,7 +18841,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 				$cn = 1;
 			}
 			if (isset($this->tagvspaces[$tag['value']][1])) {
-				$hbc = ($cn * $pre_h);
+				$hbc = ($cn * floatval($pre_h));
 			}
 		}
 		// Opening tag
@@ -19482,7 +19482,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 			if ((!isset($this->tagvspaces[$tag['value']])) AND ($tag['value'] == 'div')) {
 				$hb = 0;
 			} else {
-				$hb = ($cn * $pre_h);
+				$hb = ($cn * floatval($pre_h));
 			}
 			if ($maxbottomliney > $this->PageBreakTrigger) {
 				$hbz = $this->getCellHeight($this->FontSize);
